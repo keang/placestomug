@@ -8,8 +8,6 @@
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
 
-        
-
         <!--link href="./css/bootstrap.min.css" rel="stylesheet" media="screen"-->
         <style>
         .ui-menu { width: 150px; }
@@ -18,79 +16,65 @@
             padding = 10px;
         }
         </style>
-    </head>
+    </head>    
 
-    <script type="text/javascript">
-    
-    //var curFaculty = "tesss";
+    <script>
+        $(document).ready(function($) {
+            var curFaculty = null;
+            $('#faculty_menu a:first').tab('show');
+            $('a[data-toggle="tab"]').on('shown', function (e) {
+                //tab shown bind
+                //activeTab = e.target;
+            });
 
-    $('document').ready(function(){
-        //loading distinct faculties name:
-        function loadFaculties (){
-            $.get('/getfaculty', function(data){
-                for(var i=0; i<data.length; i++){
-                    $("#faculty_menu").append('<li><a href="#" data-toggle="tab">' + data[i].faculty_name +
-                        '</a></li>');
-                    $("#areaLIst").append('<div class="tab-pane" id='+data[i].faculty_name+'>DUMMY AREAS</div>');
-                }
-            })
-        }
-        loadFaculties();
+            $("#submitform").click(function(){
+                var curFaculty = $("ul#faculty_menu li.active").text();
+                var areaToSubmit = document.getElementById("newArea").value;
 
-
-
-        //handling faculty menu selecting event:
-        $("#faculty_menu").menu();
-        $("#faculty_menu").on("menuselect", function(){
-                alert("SELECTED");
-            }
-        );
-
-        $('select').on('change',function(){
-            $('#areaList').empty();
-            $('select option:selected').each(function(){
-                //get the list of areas into 'data, given the selected option's text
-                $.get('/getarea', {selected_faculty: $(this).text()}, function(data){
-                        for(var i=0; i< data.length; i++){
-                            $('#areaList').append('<li>'+ data[i].area_name + '</li>');
-                        }
-                        
+                $.post("/addarea", {selectedFaculty:curFaculty, areaToSubmit:areaToSubmit}, function(){
+                    $("#table_"+curFaculty).append("</<tr><td>"
+                        +areaToSubmit+"</td></tr>");
                 });
-                
-            })
 
-            //alert($(this).find('option:selected').attr('rel'));
+            });
         });
-    });
-
-    /*
-    function onFacultyChange(){
-        //var selectedFac = document.getElementById("selected_faculty");
-        var curFaculty = $("#selected_faculty").options[$("#selected_faculty").selectedIndex].textContent;
-        
-        while($("#areaList").hasChildNodes()){
-            $("#areaList").removeChild(areaTable.firstChild);
-        }
-        //areaTable.
-        
-    }*/
-    
     </script>
-    
     <body>
-        <h1>Places to Mug</h1>
-        <div class="post">
-            <form>
+        
+            <div class="row-fluid">
+                <div class="span5 text-center">
+                    <h1>Places to Mug</h1>
+                    <p id="subtitle">Help us list down the mugging spots around NUS!</p>
+                </div>
+                <div class="span7" style="padding:40px">
+                    <input type="text" class="input-large search-query" placeholder="New area" name="newArea" id="newArea">
+                    <button class="btn" id="submitform">Submit</button>
+                </div>
+            </div>
+        
+        <div class="span12">
                 <ul class="nav nav-tabs" id="faculty_menu"> 
-                    <li><a href="#">Test</a></li>
+                    {% for f in faculties %}                                         
+                    <li><a href="#{{f}}" data-toggle="tab">{{f}}</a></li>
+                    {% endfor %}
                 </ul>
-<!--            <input type = "radio" name="faculty" value="Other">Other -->
 
                 <ul class="tab-content" id="areaList">
+                    {% for f in faculties %}
+                    <div class="tab-pane" id="{{f}}">
+                        <table class="table table-striped" id="table_{{f}}">
+                            {% for p in places %}
+                                {% if p.faculty == f %}
+                                <tr><td>{{p.area}}</td></tr>
+                                {% endif %}
+                            {% endfor %}
+                        </table>
+                    </div> 
+                    {% endfor %}
                 </ul>
-            
-                <input type="submit">
-            </form>
+
+
         </div>
+        
 </body>
 </html>

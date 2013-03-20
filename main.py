@@ -42,20 +42,11 @@ places = db.GqlQuery("SELECT * FROM Place ORDER BY vote DESC")
 
 class MainPage(Handler):
     def get(self):
-
-        #facs = ["Arts", "Business", "Central Library", "Computing" ,"Science", "SDE", "Engin", "Medicine", "Music", "UTown"]
-        #for f in facs:
-         #   newItem = Faculty(key_name=f, facultyName=f)
-         #   newItem.put()
-        
-
-
         facultiesList = {}        
         for p in places.run(): 
             facultiesList[p.faculty] = p.faculty
-      #  places = db.GqlQuery("SELECT * FROM Place ORDER BY vote DESC")
-         
-        self.render("form.html", faculties = facultiesList)
+
+        self.render("form2.html", faculties=facultiesList, places = places)
         #self.render("test.html")
     
 class GetFaculty(Handler):
@@ -81,7 +72,22 @@ class GetArea(Handler):
         
         self.response.out.write(json.dumps(areaList))
 
+class AddAreaHandler(Handler):
+    def post(self):
+        faculty = self.request.get('selectedFaculty')
+        newArea = self.request.get('areaToSubmit')
+        akey = db.Key.from_path('Place', faculty+newArea)
+        a = db.get(akey)
+        if a==None:
+            a = Place(key_name= faculty+newArea, faculty = faculty, area = newArea, vote=1)
+            a.put()
+        else:
+            a.vote = a.vote + 1
+            a.put() 
+        self.redirect('/')
+
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/getarea', GetArea), 
-                               ('/getfaculty', GetFaculty)],
-                               debug=True)
+                               ('/getfaculty', GetFaculty),
+                               ('/addarea', AddAreaHandler)
+                               ], debug=True)
