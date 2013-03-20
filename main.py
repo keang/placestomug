@@ -6,6 +6,7 @@ from collections import namedtuple
 
 import webapp2
 import jinja2
+import json
 
 from google.appengine.ext import db
 
@@ -35,6 +36,10 @@ class Place(db.Model):
     area = db.StringProperty (required = True)
     vote = db.IntegerProperty(required = True)
 
+
+places = db.GqlQuery("SELECT * FROM Place ORDER BY vote DESC")
+
+
 class MainPage(Handler):
     def get(self):
 
@@ -43,34 +48,40 @@ class MainPage(Handler):
          #   newItem = Faculty(key_name=f, facultyName=f)
          #   newItem.put()
         
-        places = db.GqlQuery("SELECT * FROM Place ORDER BY vote DESC")
+
 
         facultiesList = {}        
         for p in places.run(): 
             facultiesList[p.faculty] = p.faculty
-
       #  places = db.GqlQuery("SELECT * FROM Place ORDER BY vote DESC")
          
-        self.render("form.html", faculties = facultiesList, places=places)
+        self.render("form.html", faculties = facultiesList)
         #self.render("test.html")
     
-        
-class AddPlace(Handler):
+class GetFaculty(Handler):
     def get(self):
-        """faculty = self.request.get('selected_faculty').lower()
-        area = self.request.get('selected_area').lower()
-        akey = db.Key.from_path('Place', faculty+area)
-        a = db.get(akey)
+        self.response.headers['Content-Type'] = 'application/json'
+
+        facList = {}
+        for p in places.run():
+            facList[p.faculty] = p.faculty        
+        distinctFacList = []
+        for f in facList:
+            distinctFacList.append({"faculty_name":f})
+
+        self.response.out.write(json.dumps(distinctFacList))
+
+class GetArea(Handler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'application/json'
+        areaList = []
+        for p in places.run():
+            if p.faculty == self.request.get('selected_faculty'):
+                areaList.append({"area_name":p.area})
         
-        if a==None:
-            a = Place(key_name= faculty+area, faculty = faculty, area = area, vote=1)
-            a.put()
-        else:
-            a.vote = a.vote + 1
-            a.put()   """
-        self.write("YAY") 
-        #self.redirect('/')
+        self.response.out.write(json.dumps(areaList))
 
 app = webapp2.WSGIApplication([('/', MainPage),
-                               ('/fac', AddPlace)],
+                               ('/getarea', GetArea), 
+                               ('/getfaculty', GetFaculty)],
                                debug=True)
