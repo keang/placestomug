@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title> Places to Mug </title>
+
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
+
+        <!--link href="./css/bootstrap.min.css" rel="stylesheet" media="screen"-->
+    </head>
+
+    <script type="text/javascript">
+    
+    //var curFaculty = "tesss";
+    $(document)
+    $('select').on('change',function(){
+        alert("Hello");
+        //alert($(this).find('option:selected').attr('rel'));
+    })
+    /*
+    function onFacultyChange(){
+        //var selectedFac = document.getElementById("selected_faculty");
+        var curFaculty = $("#selected_faculty").options[$("#selected_faculty").selectedIndex].textContent;
+        
+        while($("#areaList").hasChildNodes()){
+            $("#areaList").removeChild(areaTable.firstChild);
+        }
+        //areaTable.
+        
+    }*/
+    
+    </script>
+    
+    <body>
+        <h1>Places to Mug</h1>
+        <div class="post">
+            <form>
+                <select id="faculty_menu">
+                    <option value="yes">Hello</option>
+
+                {% for f in faculties %}
+                    <option value="{{ f }}">{{ f }}</option>
+                {% endfor %}
+                </select>
+
+<!--            <input type = "radio" name="faculty" value="Other">Other -->
+
+                <ul id="areaList">
+                    <li> HELLOOOO</li>
+                </ul>
+            
+                <input type="submit">
+            </form>
+        </div>
+</body>
+</html>
