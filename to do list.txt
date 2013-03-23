@@ -1,0 +1,2 @@
+- faculty not listed in alphabetical order(or any other order)
+- change database structure: to 2 separate entities, faculty and areas
