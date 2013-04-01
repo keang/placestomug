@@ -42,38 +42,47 @@
     <body>
         
             <div class="row-fluid">
-                <div class="span5 text-center">
-                    <h1>Places to Mug</h1>
-                    <p id="subtitle">Help us list down the mugging spots around NUS!</p>
-                </div>
-                <div class="span7" style="padding:40px">
-                    <input type="text" class="input-large search-query" placeholder="New area" name="newArea" id="newArea">
-                    <button class="btn" id="submitform">Submit</button>
+                <div class="span4 offset1 text-center" style="padding-top:10px">
+                     <h1>Places to Mug</h1>
+                     <p id="subtitle">Help us list down all the good <i>mugging/meeting</i> spots around NUS!</p>
+                 </div>
+                
+                <div class="span4 row-fluid text-center" style="padding-top:50px">
+                     <input type="text" class="span8 input-large search-query btn-large" placeholder="Pick a faculty, enter an area name" name="newArea" id="newArea">
+                     <button class="btn btn-info" id="submitform">Submit</button>
+                 </div>
+                <div class="span3" style="padding-top:40px">
+                    <ul>
+                        <li><a href="mailto:mugtownnus@gmail.com">email</a></li>
+                        <li><a href="http://www.mugnus.wordpress.com" target="_blank">blog</a></li>
+                        <li><a href="https://github.com/kakadadroid/placestomug/" target="_blank">git</a></li>
+                    </ul>
                 </div>
             </div>
-        
-        <div class="span12">
-                <ul class="nav nav-tabs" id="faculty_menu"> 
-                    {% for f in faculties %}                                         
-                    <li><a href="#{{f}}" data-toggle="tab">{{f}}</a></li>
-                    {% endfor %}
-                </ul>
+        <div class="row-fluid">
+            <div class="span12">
+                    <ul class="nav nav-tabs" id="faculty_menu"> 
+                        {% for f in faculties %}                                         
+                        <li><a href="#{{f}}" data-toggle="tab">{{f}}</a></li>
+                        {% endfor %}
+                    </ul>
 
-                <ul class="tab-content" id="areaList">
-                    {% for f in faculties %}
-                    <div class="tab-pane" id="{{f}}">
-                        <table class="table table-striped" id="table_{{f}}">
-                            {% for p in places %}
-                                {% if p.faculty == f %}
-                                <tr><td>{{p.area}}</td></tr>
-                                {% endif %}
-                            {% endfor %}
-                        </table>
-                    </div> 
-                    {% endfor %}
-                </ul>
+                    <ul class="tab-content" id="areaList">
+                        {% for f in faculties %}
+                        <div class="tab-pane" id="{{f}}">
+                            <table class="table table-striped" id="table_{{f}}">
+                                {% for p in places %}
+                                    {% if p.faculty == f %}
+                                    <tr><td>{{p.area}}</td></tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </table>
+                        </div> 
+                        {% endfor %}
+                    </ul>
 
 
+            </div>
         </div>
         
 </body>
