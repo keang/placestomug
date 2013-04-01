@@ -3,14 +3,13 @@ import re
 from string import letters
 import datetime
 from collections import namedtuple
-import logging
 
 import webapp2
 import jinja2
 import json
 
 from google.appengine.ext import db
-from google.appengine.api import memcache
+
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
@@ -26,7 +25,7 @@ class Handler(webapp2.RequestHandler):
         self.response.out.write(*a, **kw)
 
     def render_str(self, template, **params):
-        #params['user'] = self.user
+#        params['user'] = self.user
         return render_str(template, **params)
 
     def render(self, template, **kw):
@@ -37,61 +36,18 @@ class Place(db.Model):
     area = db.StringProperty (required = True)
     vote = db.IntegerProperty(required = True)
 
+
+places = db.GqlQuery("SELECT * FROM Place ORDER BY vote DESC")
+
+
 class MainPage(Handler):
-    def get_places(self):
-
-        placesList = memcache.get("top")
-        if placesList is not None:
-            return placesList
-        else:
-            places = db.GqlQuery("SELECT * FROM Place ORDER BY faculty DESC")
-            placesList = list(places)
-            memcache.add("top", placesList)
-            
-            return placesList 
-
-
     def get(self):
-        placesList = self.get_places()
         facultiesList = {}        
-        for p in placesList: 
-            self.write(p)
+        for p in places.run(): 
             facultiesList[p.faculty] = p.faculty
 
-        self.render("form2.html", faculties=facultiesList, places = placesList)
+        self.render("form2.html", faculties=facultiesList, places = places)
         #self.render("test.html")
-
-class AddAreaHandler(Handler):
-    def post(self):
-        faculty = self.request.get('selectedFaculty')
-        newArea = self.request.get('areaToSubmit')
-        akey = db.Key.from_path('Place', faculty+newArea)
-        a = db.get(akey)
-        
-        if a==None:
-            a = Place(key_name= faculty+newArea, faculty = faculty, area = newArea, vote=1)
-            
-        else:
-            a.vote = a.vote + 1
-        a.put() 
-        self.update_memcache(a)
-        self.redirect('/')
-
-    def update_memcache(self, newPlace):
-        client = memcache.Client()
-        updatedCache = client.get("top")
-
-        #new cache image:
-        updatedCache.append(newPlace)
-
-        #retury loop:
-        while True:
-            tryList = client.gets("top")
-            assert tryList is not None, 'Uninitialized counter'
-            if client.cas("top", updatedCache):
-                logging.error("Wrote cache")
-                break
-
     
 class GetFaculty(Handler):
     def get(self):
@@ -116,13 +72,21 @@ class GetArea(Handler):
         
         self.response.out.write(json.dumps(areaList))
 
-
-class ServerErrorPage(Handler):
-    def get(self):
-        self.render("serverbusy.html")
+class AddAreaHandler(Handler):
+    def post(self):
+        faculty = self.request.get('selectedFaculty')
+        newArea = self.request.get('areaToSubmit')
+        akey = db.Key.from_path('Place', faculty+newArea)
+        a = db.get(akey)
+        if a==None:
+            a = Place(key_name= faculty+newArea, faculty = faculty, area = newArea, vote=1)
+            a.put()
+        else:
+            a.vote = a.vote + 1
+            a.put() 
+        self.redirect('/')
 
 app = webapp2.WSGIApplication([('/', MainPage),
-                                ('/serverbusy', ServerErrorPage),
                                ('/getarea', GetArea), 
                                ('/getfaculty', GetFaculty),
                                ('/addarea', AddAreaHandler)

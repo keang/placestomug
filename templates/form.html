@@ -1,153 +1,96 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
-    <title> Places to Mug </title>
-    <!--link href="./css/bootstrap.min.css" rel="stylesheet" media="screen"-->
-  </head>
+    <head>
+        <title> Places to Mug </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+        
+
+        <!--link href="./css/bootstrap.min.css" rel="stylesheet" media="screen"-->
+        <style>
+        .ui-menu { width: 150px; }
+        ul{
+            list-style: none;
+            padding = 10px;
+        }
+        </style>
+    </head>
+
+    <script type="text/javascript">
+    
+    //var curFaculty = "tesss";
+
+    $('document').ready(function(){
+        //loading distinct faculties name:
+        function loadFaculties (){
+            $.get('/getfaculty', function(data){
+                for(var i=0; i<data.length; i++){
+                    $("#faculty_menu").append('<li><a href="#" data-toggle="tab">' + data[i].faculty_name +
+                        '</a></li>');
+                    $("#areaLIst").append('<div class="tab-pane" id='+data[i].faculty_name+'>DUMMY AREAS</div>');
+                }
+            })
+        }
+        loadFaculties();
 
 
-  <style type="text/css">
-  body {
-    position: relative;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 14px;
 
-    width: 800px;
-    margin: 0 auto;
-    padding: 10px;
-    color: #333;
-}
+        //handling faculty menu selecting event:
+        $("#faculty_menu").menu();
+        $("#faculty_menu").on("menuselect", function(){
+                alert("SELECTED");
+            }
+        );
 
-.login-area {
-    font-size: 13px;
-    color: gray;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
+        $('select').on('change',function(){
+            $('#areaList').empty();
+            $('select option:selected').each(function(){
+                //get the list of areas into 'data, given the selected option's text
+                $.get('/getarea', {selected_faculty: $(this).text()}, function(data){
+                        for(var i=0; i< data.length; i++){
+                            $('#areaList').append('<li>'+ data[i].area_name + '</li>');
+                        }
+                        
+                });
+                
+            })
 
-.login-link {
-    color: gray;
-    text-decoration: none;
-}
+            //alert($(this).find('option:selected').attr('rel'));
+        });
+    });
 
-.login-link:visited {
-    color: gray;
-}
-
-.login-link:hover {
-    text-decoration: underline;
-}
-
-h2 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-.error {
-    color: red;
-}
-
-label {
-  display: block;
-  font-size: 20px;
-}
-
-label + label {
-    margin-top: 20px;
-}
-
-input[type=text] {
-    width: 500px;
-    font-size: 20px;
-    padding: 2px;
-    font-family: monospace;
-}
-
-textarea {
-  width: 500px;
-  height: 400px;
-  font-size: 17px;
-  font-family: monospace;
-}
-
-input[type=submit] {
-  font-size: 24px;
-}
-
-.main-title {
-    display: block;
-    color: #222;
-    font-size: 40px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 30px;
-    text-decoration: none;
-}
-
-.post + .post {
-    margin-top: 15px;
-}
-
-.post-heading {
-    position: relative;
-    border-bottom: 3px solid #666;
-}
-
-.post-title {
-    font-size: 24px;
-    font-weight: bold;
-
-    text-decoration: none;
-    color: #333;
-}
-
-.post-title:visisted {
-    color: #333;
-}
-
-.post-date {
-    position: absolute;
-    right: 0px;
-    bottom: 0px;
-    color: #999;
-
-}
-
-.post-content {
-    margin-top: 5px;
-}
-
-.age {
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-    color: gray;
-    font-size: 12px;
-}
-
-  </style>
-
-  <body>
-    <h1>Places to Mug</h1>
-	<div class="post">
-	   <p>{{f}}</p>
-		<form>
-		    
-            {% for p in places %}
-            <p>Hello</p>
-            <!--input type="radio" name="faculty" value="{{f}}">{{f}}<br-->
-            {% endfor %}
+    /*
+    function onFacultyChange(){
+        //var selectedFac = document.getElementById("selected_faculty");
+        var curFaculty = $("#selected_faculty").options[$("#selected_faculty").selectedIndex].textContent;
+        
+        while($("#areaList").hasChildNodes()){
+            $("#areaList").removeChild(areaTable.firstChild);
+        }
+        //areaTable.
+        
+    }*/
+    
+    </script>
+    
+    <body>
+        <h1>Places to Mug</h1>
+        <div class="post">
+            <form>
+                <ul class="nav nav-tabs" id="faculty_menu"> 
+                    <li><a href="#">Test</a></li>
+                </ul>
 <!--            <input type = "radio" name="faculty" value="Other">Other -->
-            <input type = "text" name = "new_faculty_name" placeholder="Faculty"></input>
-            <input type="text" name="new_area" placeholder="Area"></input>
-            <br>
-            <input type="submit">
-        </form>
-    </div>
-    <hr>
 
-  </body>
+                <ul class="tab-content" id="areaList">
+                </ul>
+            
+                <input type="submit">
+            </form>
+        </div>
+</body>
 </html>

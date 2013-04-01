@@ -4,7 +4,6 @@
     <head>
         <title> Places to Mug </title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -35,27 +34,22 @@
                 $.post("/addarea", {selectedFaculty:curFaculty, areaToSubmit:areaToSubmit}, function(){
                     $("#table_"+curFaculty).append("</<tr><td>"
                         +areaToSubmit+"</td></tr>");
-                    $("#newArea").val("");
-                    $("#newArea").attr("placeholder", "Thank you! Any more areas?")
                 });
 
             });
         });
     </script>
     <body>
-             <div class="row-fluid">
-                <div class="span5 offset1 text-center" style="padding-top:10px">
-                    <h1>Places to Mug</h1>
-                    <p id="subtitle">Help us list down all the good <i>mugging/meeting</i> spots around NUS!</p>
-                </div>
-                    <div class="span5 row-fluid" style="padding:50px">
-                    <input type="text" class="span8 input-large search-query btn-large" placeholder="Pick a faculty, enter an area name" name="newArea" id="newArea">
-                    <button class="btn btn-info" id="submitform">Submit</button>
-                </div>
-            </div>
+        
             <div class="row-fluid">
-
-                
+                <div class="span5 text-center">
+                    <h1>Places to Mug</h1>
+                    <p id="subtitle">Help us list down the mugging spots around NUS!</p>
+                </div>
+                <div class="span7" style="padding:40px">
+                    <input type="text" class="input-large search-query" placeholder="New area" name="newArea" id="newArea">
+                    <button class="btn" id="submitform">Submit</button>
+                </div>
             </div>
         
         <div class="span12">
