@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title> Places to Mug </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+        <!--link href="./css/bootstrap.min.css" rel="stylesheet" media="screen"-->
+        <style>
+        .ui-menu { width: 150px; }
+        ul{
+            list-style: none;
+            padding = 10px;
+        }
+        </style>
+    </head>    
+    <script>
+        $(document).ready(function($) {
+
+        });
+    </script>
+    <body>
+        <div class="row-fluid">
+            <div class="span5 offset1 text-center" style="padding-top:10px">
+                <h1>Places to Mug</h1>
+                <h5 id="subtitle">Seat Chopping Ticket</h5>
+            </div>
+                
+        </div>
+        <div class="row-fluid">
+            <div class="span5 offset1 text-center">
+                    <p>Congratulations, {{name}}!<br> You have chopped a seat at <u>{{fac}}</u>, <u>{{area}}</u>, on 1st April for <u>1 hour</u>. <br> Please print this ticket.</p>
+
+                    <p class="text-warning">Disclaimer: This ticket only works if the table is vacant. <br>If the table is occupied, and you want to share the seat, please politely say: <i>"Do you mind if I take this seat?"</i></p>
+            </div>
+        </div>
+        
+</body>
+</html>
