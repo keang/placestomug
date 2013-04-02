@@ -50,7 +50,6 @@ class MainPage(Handler):
             
             return placesList 
 
-
     def get(self):
         placesList = self.get_places()
         facultiesList = {}        
@@ -59,7 +58,6 @@ class MainPage(Handler):
             facultiesList[p.faculty] = p.faculty
         facultiesList["Engineering"] = "Engineering"
         self.render("form2.html", faculties=facultiesList, places = placesList)
-        #self.render("test.html")
 
 class AddAreaHandler(Handler):
     def post(self):
@@ -122,29 +120,9 @@ class ServerErrorPage(Handler):
         self.render("serverbusy.html")
 
 
-fac = ''
-area=''
-class ChopSeatHandler(Handler):
-
-    def get(self):
-        self.render("chopseat.html", fac=fac, area=area)
-    def post(self):
-        global fac
-        global area
-        fac = self.request.get("fac")
-        area = self.request.get("area")
-        self.redirect('/chopseat')
-
-class ShowTicketHandler(Handler):
-    def get(self):
-        name = self.request.get("fullname")
-        self.render("ticket.html", name=name, fac=fac, area=area)
-
 app = webapp2.WSGIApplication([('/', MainPage),
                                 ('/serverbusy', ServerErrorPage),
                                ('/getarea', GetArea), 
                                ('/getfaculty', GetFaculty),
                                ('/addarea', AddAreaHandler),
-                               ('/chopseat', ChopSeatHandler),
-                               ('/showticket', ShowTicketHandler)
                                ], debug=True)
