@@ -57,6 +57,7 @@ class MainPage(Handler):
         for p in placesList: 
             self.write(p)
             facultiesList[p.faculty] = p.faculty
+        facultiesList["Engineering"] = "Engineering"
         self.render("form2.html", faculties=facultiesList, places = placesList)
         #self.render("test.html")
 
