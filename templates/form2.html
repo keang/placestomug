@@ -16,14 +16,28 @@
             padding = 10px;
         }
         </style>
-    </head>    
+        <!--google analytics codes-->
+        <script type="text/javascript">
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', 'UA-39726291-1']);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+        </script>
+        </head>    
+        
+        
 
     <script>
         $(document).ready(function($) {
             var curFaculty = null;
             $('#faculty_menu a:first').tab('show');
             $('a[data-toggle="tab"]').on('shown', function (e) {
-                //tab shown bind
+                //tab shown binding function
                 //activeTab = e.target;
             });
 
@@ -34,30 +48,29 @@
                 $.post("/addarea", {selectedFaculty:curFaculty, areaToSubmit:areaToSubmit}, function(){
                     $("#table_"+curFaculty).append("</<tr><td>"
                         +areaToSubmit+"</td></tr>");
+                    $("#newArea").val("");
+                    $("#newArea").attr("placeholder", "Thank you! Any more areas?")
                 });
-
             });
+
         });
     </script>
     <body>
-        
-            <div class="row-fluid">
+             <div class="row-fluid">
                 <div class="span4 offset1 text-center" style="padding-top:10px">
-                     <h1>Places to Mug</h1>
-                     <p id="subtitle">Help us list down all the good <i>mugging/meeting</i> spots around NUS!</p>
-                 </div>
-                
+                    <h1>Places to Mug</h1>
+                    <p id="subtitle">Help us list down all the good <i>mugging/meeting</i> spots around NUS!</p>
+                </div>
                 <div class="span4 row-fluid text-center" style="padding-top:50px">
-                     <input type="text" class="span8 input-large search-query btn-large" placeholder="Pick a faculty, enter an area name" name="newArea" id="newArea">
-                     <button class="btn btn-info" id="submitform">Submit</button>
-                 </div>
+                    <input type="text" class="span8 input-large search-query btn-large" placeholder="Pick a faculty, enter an area name" name="newArea" id="newArea">
+                    <button class="btn btn-info" id="submitform">Submit</button>
+                </div>
                 <div class="span3" style="padding-top:40px">
                     <ul>
                         <li><a href="mailto:mugtownnus@gmail.com">email</a></li>
                         <li><a href="http://www.mugnus.wordpress.com" target="_blank">blog</a></li>
                         <li><a href="https://github.com/kakadadroid/placestomug/" target="_blank">git</a></li>
                     </ul>
-                </div>
             </div>
         <div class="row-fluid">
             <div class="span12">
@@ -67,19 +80,23 @@
                         {% endfor %}
                     </ul>
 
-                    <ul class="tab-content" id="areaList">
-                        {% for f in faculties %}
-                        <div class="tab-pane" id="{{f}}">
-                            <table class="table table-striped" id="table_{{f}}">
-                                {% for p in places %}
-                                    {% if p.faculty == f %}
-                                    <tr><td>{{p.area}}</td></tr>
-                                    {% endif %}
-                                {% endfor %}
-                            </table>
-                        </div> 
-                        {% endfor %}
-                    </ul>
+                <ul class="tab-content" id="areaList">
+                    {% for f in faculties %}
+                    
+                    <div class="tab-pane" id="{{f}}">
+                        <table class="table table-striped" id="table_{{f}}">
+                            {% for p in places %}
+                                {% if p.faculty == f %}
+                                <tr>
+                                    <td class="span8">{{p.area}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </table>
+                    </div> 
+                
+                    {% endfor %}
+                </ul>
 
 
             </div>
